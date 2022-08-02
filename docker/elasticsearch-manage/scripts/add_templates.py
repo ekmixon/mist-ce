@@ -25,7 +25,7 @@ def es_client():
         verify_certs=bool(os.getenv('ELASTIC_VERIFY_CERTS', False)),
         ca_certs=certifi.where()
     )
-    for i in range(20):
+    for _ in range(20):
         if es.ping():
             return es
         print("Elasticsearch not up yet")
@@ -40,11 +40,8 @@ def add_templates(force=False):
     # Initialize ES client.
     es = es_client()
 
-    hosts = []
-    for host in es.transport.hosts:
-        hosts.append(host['host'])
-
-    print('Connected to: %s' % ', '.join(hosts))
+    hosts = [host['host'] for host in es.transport.hosts]
+    print(f"Connected to: {', '.join(hosts)}")
 
     # Script path.
     spath = os.path.dirname(__file__)
@@ -55,7 +52,7 @@ def add_templates(force=False):
     # Load templates from path.
     err = False
     for tfile in os.listdir(tpath):
-        tfile = '%s/%s' % (tpath, tfile)
+        tfile = f'{tpath}/{tfile}'
 
         with open(tfile, 'r') as tf:
             template = json.loads(tf.read())

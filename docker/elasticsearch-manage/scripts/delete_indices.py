@@ -27,11 +27,8 @@ def delete_indices(index):
     # Initialize ES client.
     es = es_client()
 
-    hosts = []
-    for host in es.transport.hosts:
-        hosts.append(host['host'])
-
-    print('Connected to: %s' % ', '.join(hosts))
+    hosts = [host['host'] for host in es.transport.hosts]
+    print(f"Connected to: {', '.join(hosts)}")
     print('This operation will DELETE indices with index pattern: "%s"' % index)
 
     while True:
